@@ -1,0 +1,36 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: enhancement-workload-role-binding
+  namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ks-autoscaling-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "enhancement-workload.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: enhancement-workload-cluster-role
+  namespace: {{ .Release.Namespace | quote }}
+rules:
+  - apiGroups:
+      - apps.kruise.io
+    resources:
+      - clonesets
+      - clonesets/status
+      - sidecarsets
+      - sidecarsets/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
