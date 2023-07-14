@@ -33,7 +33,6 @@ func (s *ServerRunOptions) NewApiServer(stopCh <-chan struct{}) (*apiserver.APIS
 	informerFactory := informers.NewInformerFactories(kubernetesClient, kruiseClientset, dynamicClient)
 
 	apiServer.Server = server
-	apiServer.List = make(chan interface{}, 12)
 	apiServer.InformerFactory = informerFactory
 	apiServer.KruiseClient = kruiseClientset
 	apiServer.K8sclient = kubernetesClient
