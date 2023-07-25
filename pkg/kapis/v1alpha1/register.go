@@ -17,7 +17,7 @@ import (
 	"net/http"
 )
 
-var GroupVersion = schema.GroupVersion{Group: "apps.kruise.io", Version: "v1alpha1"}
+var GroupVersion = schema.GroupVersion{Group: "", Version: "v1alpha1"}
 
 func SwaggerObject(swo *spec.Swagger) {
 	swo.Info = &spec.Info{
@@ -61,27 +61,26 @@ func AddToContainer(container *restful.Container, informers informers.InformerFa
 		To(h.ListResource).
 		Doc("List the cloneset object or sidecarset object in all namespace").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.Common}).
-		Param(ws.PathParameter("resources", "known values include cloneset, sidecarset").Required(true)).
+		Param(ws.PathParameter("resources", "known values include clonesets, sidecarsets").Required(true)).
 		Param(ws.QueryParameter(query.ParameterPage, "page").Required(false).DataFormat("page=%d").DefaultValue("page=1")).
 		Param(ws.QueryParameter(query.ParameterLimit, "limit").Required(false)).
 		Param(ws.QueryParameter(query.ParameterAscending, "sort parameters, e.g. ascending=false").Required(false).DefaultValue("ascending=false")).
 		Param(ws.QueryParameter(query.ParameterOrderBy, "sort parameters, e.g. orderBy=createTime")).
 		Writes(api.ListResult{Items: []interface{}{}}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, api.ListResult{Items: []interface{}{}}))
 
-	ws.Route(ws.GET("/pod").
-		To(h.ListPod).
-		Doc("Get the pod object in the specified namespace").
-		Metadata(openapi.KeyOpenAPITags, []string{constants.PodType}).
-		Param(ws.QueryParameter("resource", "known values include cloneset, sidecarset").Required(true)).
-		Param(ws.QueryParameter("namespace", "name of the namespace").Required(false)).
-		Param(ws.QueryParameter("name", "name of the pod").Required(true)).
-		Writes(api.ListResult{Items: []interface{}{}}).
-		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
-		Returns(http.StatusOK, api.StatusOK, api.ListResult{Items: []interface{}{}}))
+	//ws.Route(ws.GET("/pod").
+	//	To(h.ListPod).
+	//	Doc("Get the pod object in the specified namespace").
+	//	Metadata(openapi.KeyOpenAPITags, []string{constants.PodType}).
+	//	Param(ws.QueryParameter("resource", "known values include cloneset, sidecarset").Required(true)).
+	//	Param(ws.QueryParameter("namespace", "name of the namespace").Required(false)).
+	//	Param(ws.QueryParameter("name", "name of the pod").Required(true)).
+	//	Writes(api.ListResult{Items: []interface{}{}}).
+	//	Produces(restful.MIME_JSON).
+	//	ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
+	//	Returns(http.StatusOK, api.StatusOK, api.ListResult{Items: []interface{}{}}))
 
 	registerCloneSetApi(ws, h)
 	registerSidecarSetApi(ws, h)
@@ -104,7 +103,6 @@ func registerCloneSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.QueryParameter(query.ParameterOrderBy, "sort parameters, e.g. orderBy=createTime")).
 		Writes(api.ListResult{Items: []interface{}{}}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, api.ListResult{Items: []interface{}{}}))
 
 	// get clonesets
@@ -117,7 +115,6 @@ func registerCloneSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter("name", "name of the cloneset").Required(true)).
 		Writes(v1alpha1.CloneSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.CloneSet{}))
 
 	// create clonesets
@@ -129,32 +126,29 @@ func registerCloneSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter("resources", "known values include cloneset").Required(true)).
 		Writes(v1alpha1.CloneSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.CloneSet{}))
 
 	// update clonesets
 	ws.Route(ws.PUT("/namespaces/{namespace}/{resources}/{name}").
 		To(h.UpdateResource).
-		Doc("create a cloneset or sidecarset").
+		Doc("create a cloneset").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.CloneSetType}).
 		Param(ws.PathParameter("namespace", "namespace of the Resource").Required(true)).
 		Param(ws.PathParameter("resources", "known values include cloneset, sidecarset").Required(true)).
 		Param(ws.PathParameter("name", "name of the scaledobject").Required(true)).
 		Writes(v1alpha1.CloneSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.CloneSet{}))
 
 	// delete clonesets
 	ws.Route(ws.DELETE("/namespaces/{namespace}/{resources}/{name}").
 		To(h.DeleteResource).
-		Doc("delete the specified cloneset or scaledjob").
+		Doc("delete the specified cloneset").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.CloneSetType}).
 		Param(ws.PathParameter("namespaces", "namespace of sidecarset").Required(true)).
 		Param(ws.PathParameter("resources", "known values include cloneset").Required(true)).
 		Param(ws.PathParameter(query.ParameterName, "the name of the resource").Required(true)).
 		Writes(serrors.None).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, serrors.None))
 }
 
@@ -169,7 +163,6 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter("name", "name of sidecarset").Required(true)).
 		Writes(v1alpha1.SidecarSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.SidecarSet{}))
 
 	// create sidecarsets
@@ -180,7 +173,6 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter("resources", "known values include sidecarsets").Required(true)).
 		Writes(v1alpha1.SidecarSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.SidecarSet{}))
 
 	// update sidecarsets
@@ -192,7 +184,6 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter(query.ParameterName, "name of the sidecarset").Required(true)).
 		Writes(v1alpha1.SidecarSet{}).
 		Produces(restful.MIME_JSON).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.SidecarSet{}))
 
 	// delete sidecarsets
@@ -203,6 +194,5 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter("resources", "known values include sidecarset").Required(true)).
 		Param(ws.PathParameter(query.ParameterName, "the name of the resource").Required(true)).
 		Writes(serrors.None).
-		ReturnsError(http.StatusInternalServerError, api.StatusError, api.ErrorMessage{}).
 		Returns(http.StatusOK, api.StatusOK, serrors.None))
 }

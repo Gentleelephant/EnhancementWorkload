@@ -24,7 +24,8 @@ import (
 )
 
 const (
-	ApiRootPath = "/kapis"
+	ApiRootPath  = "/kapis"
+	NoneRootPath = ""
 )
 
 // container holds all webservice of apiserver
@@ -43,7 +44,7 @@ func init() {
 
 func NewWebService(gv schema.GroupVersion) *restful.WebService {
 	webservice := restful.WebService{}
-	webservice.Path(ApiRootPath + "/" + gv.String()).
+	webservice.Path(NoneRootPath + "/" + gv.String()).
 		Produces(restful.MIME_JSON)
 
 	return &webservice

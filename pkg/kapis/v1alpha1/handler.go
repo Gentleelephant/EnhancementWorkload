@@ -1,15 +1,12 @@
 package v1alpha1
 
 import (
-	"fmt"
 	"github.com/Gentleelephant/EnhancementWorkload/pkg/api"
 	"github.com/Gentleelephant/EnhancementWorkload/pkg/apiserver/query"
-	"github.com/Gentleelephant/EnhancementWorkload/pkg/constants"
 	"github.com/Gentleelephant/EnhancementWorkload/pkg/informers"
 	"github.com/Gentleelephant/EnhancementWorkload/pkg/models/v1alpha1"
 	serrors "github.com/Gentleelephant/EnhancementWorkload/pkg/server/errors"
 	"github.com/emicklei/go-restful/v3"
-	v1alpha12 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	kruiseclientset "github.com/openkruise/kruise-api/client/clientset/versioned"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/kubernetes"
@@ -41,17 +38,17 @@ func (h *Handler) ListResource(request *restful.Request, response *restful.Respo
 	resources := request.PathParameter("resources")
 	q := query.ParseQueryParameter(request)
 
-	user := request.HeaderParameter(constants.UserAgent)
-
-	if resources == constants.SidecarSetType {
-		labelSelector := q.LabelSelector
-		if labelSelector == "" {
-			labelSelector = fmt.Sprintf("%s=%s", constants.UserAgent, user)
-		} else {
-			labelSelector = fmt.Sprintf("%s,%s=%s", labelSelector, constants.UserAgent, user)
-		}
-		q.LabelSelector = labelSelector
-	}
+	//user := request.HeaderParameter(constants.UserAgent)
+	//
+	//if resources == constants.SidecarSetType {
+	//	labelSelector := q.LabelSelector
+	//	if labelSelector == "" {
+	//		labelSelector = fmt.Sprintf("%s=%s", constants.UserAgent, user)
+	//	} else {
+	//		labelSelector = fmt.Sprintf("%s,%s=%s", labelSelector, constants.UserAgent, user)
+	//	}
+	//	q.LabelSelector = labelSelector
+	//}
 
 	objs, err := h.operator.List(namespace, resources, q)
 	handleResponse(request, response, objs, err)
@@ -68,27 +65,27 @@ func (h *Handler) GetResource(request *restful.Request, response *restful.Respon
 	}
 	obj, err := h.operator.Get(namespace, resources, name)
 
-	deepCopy := obj.DeepCopyObject()
-	sidecarset, ok := deepCopy.(*v1alpha12.SidecarSet)
-	if ok {
-		labels := sidecarset.GetLabels()
-		if labels != nil {
-			user := request.HeaderParameter(constants.UserAgent)
-			if user == "" {
-				obj = nil
-			}
-			labelUser, exist := labels[constants.UserAgent]
-			if !exist {
-				obj = nil
-			} else if labelUser != user {
-				klog.Errorf("user [%s] can not get sidecarset %s", user, name)
-				obj = nil
-				err = errors.NewForbidden(v1alpha12.Resource("sidecarset"), name, serrors.New("user [%s] can not get sidecarset %s", user, name))
-			}
-		} else {
-			obj = nil
-		}
-	}
+	//deepCopy := obj.DeepCopyObject()
+	//sidecarset, ok := deepCopy.(*v1alpha12.SidecarSet)
+	//if ok {
+	//	labels := sidecarset.GetLabels()
+	//	if labels != nil {
+	//		user := request.HeaderParameter(constants.UserAgent)
+	//		if user == "" {
+	//			obj = nil
+	//		}
+	//		labelUser, exist := labels[constants.UserAgent]
+	//		if !exist {
+	//			obj = nil
+	//		} else if labelUser != user {
+	//			klog.Errorf("user [%s] can not get sidecarset %s", user, name)
+	//			obj = nil
+	//			err = errors.NewForbidden(v1alpha12.Resource("sidecarset"), name, serrors.New("user [%s] can not get sidecarset %s", user, name))
+	//		}
+	//	} else {
+	//		obj = nil
+	//	}
+	//}
 	handleResponse(request, response, obj, err)
 }
 
@@ -107,19 +104,19 @@ func (h *Handler) CreateResource(request *restful.Request, response *restful.Res
 		return
 	}
 
-	if resources == constants.SidecarSetType {
-		sidecarSet, ok := obj.(*v1alpha12.SidecarSet)
-		if ok {
-			labels := sidecarSet.GetLabels()
-			if labels == nil {
-				labels = make(map[string]string)
-			}
-			user := request.HeaderParameter(constants.UserAgent)
-			labels[constants.UserAgent] = user
-			sidecarSet.SetLabels(labels)
-		}
-		obj = sidecarSet
-	}
+	//if resources == constants.SidecarSetType {
+	//	sidecarSet, ok := obj.(*v1alpha12.SidecarSet)
+	//	if ok {
+	//		labels := sidecarSet.GetLabels()
+	//		if labels == nil {
+	//			labels = make(map[string]string)
+	//		}
+	//		user := request.HeaderParameter(constants.UserAgent)
+	//		labels[constants.UserAgent] = user
+	//		sidecarSet.SetLabels(labels)
+	//	}
+	//	obj = sidecarSet
+	//}
 
 	if err := h.operator.VerifyResouces(namespace, obj); err != nil {
 		api.HandleBadRequest(response, request, err)
