@@ -37,7 +37,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    name: Build ResourceDistributor Image
+    name: Build EnhancementWorkload Image
     steps:
       - name: Install Go
         uses: actions/setup-go@v2

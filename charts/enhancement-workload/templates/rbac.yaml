@@ -1,23 +1,21 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: enhancement-workload-role-binding
-  namespace: {{ .Release.Namespace | quote }}
+  name: enhancementWorkload-role-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ks-autoscaling-cluster-role
+  name: enhancementWorkload-cluster-role
 subjects:
   - kind: ServiceAccount
-    name: {{ include "enhancement-workload.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace | quote }}
+    name: {{ include "enhancementWorkload.serviceAccountName" . }}
+    namespace: {{ include "enhancementWorkload.namespace" . }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: enhancement-workload-cluster-role
-  namespace: {{ .Release.Namespace | quote }}
+  name: enhancementWorkload-cluster-role
 rules:
   - apiGroups:
       - apps.kruise.io

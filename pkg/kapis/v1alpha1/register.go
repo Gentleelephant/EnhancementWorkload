@@ -59,7 +59,7 @@ func AddToContainer(container *restful.Container, informers informers.InformerFa
 	// list all cloneset/sidecarset in all namespaces
 	ws.Route(ws.GET("/{resources}").
 		To(h.ListResource).
-		Doc("List the cloneset object or sidecarset object in all namespace").
+		Doc("List the clonesets object or sidecarsets object in all namespace").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.Common}).
 		Param(ws.PathParameter("resources", "known values include clonesets, sidecarsets").Required(true)).
 		Param(ws.QueryParameter(query.ParameterPage, "page").Required(false).DataFormat("page=%d").DefaultValue("page=1")).
@@ -94,9 +94,9 @@ func registerCloneSetApi(ws *restful.WebService, h *Handler) {
 	// list clonesets in a namespaces
 	ws.Route(ws.GET("/namespaces/{namespace}/{resources}").
 		To(h.ListResource).
-		Doc("List the cloneset object in all namespace").
+		Doc("List the clonesets object in all namespace").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.CloneSetType}).
-		Param(ws.PathParameter("resources", "known values include sidecarset").Required(true)).
+		Param(ws.PathParameter("resources", "known values include sidecarsets").Required(true)).
 		Param(ws.QueryParameter(query.ParameterPage, "page").Required(false).DataFormat("page=%d").DefaultValue("page=1")).
 		Param(ws.QueryParameter(query.ParameterLimit, "limit").Required(false)).
 		Param(ws.QueryParameter(query.ParameterAscending, "sort parameters, e.g. ascending=false").Required(false).DefaultValue("ascending=false")).
@@ -108,7 +108,7 @@ func registerCloneSetApi(ws *restful.WebService, h *Handler) {
 	// get clonesets
 	ws.Route(ws.GET("/namespaces/{namespace}/{resources}/{name}").
 		To(h.GetResource).
-		Doc("Get the cloneset object in the specified namespace").
+		Doc("Get the clonesets object in the specified namespace").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.CloneSetType}).
 		Param(ws.PathParameter("namespace", "name of the namespace").Required(true)).
 		Param(ws.PathParameter("resources", "known values include cloneset, sidecarset").Required(true)).

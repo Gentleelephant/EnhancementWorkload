@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "enhancement-workload.name" -}}
+{{- define "enhancementWorkload.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "enhancement-workload.fullname" -}}
+{{- define "enhancementWorkload.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "enhancement-workload.chart" -}}
+{{- define "enhancementWorkload.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "enhancement-workload.labels" -}}
-helm.sh/chart: {{ include "enhancement-workload.chart" . }}
-{{ include "enhancement-workload.selectorLabels" . }}
+{{- define "enhancementWorkload.labels" -}}
+helm.sh/chart: {{ include "enhancementWorkload.chart" . }}
+{{ include "enhancementWorkload.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,18 +45,27 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "enhancement-workload.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "enhancement-workload.name" . }}
+{{- define "enhancementWorkload.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "enhancementWorkload.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "enhancement-workload.serviceAccountName" -}}
+{{- define "enhancementWorkload.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "enhancement-workload.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "enhancementWorkload.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{- define "enhancementWorkload.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
