@@ -69,3 +69,8 @@ Create the name of the service account to use
     {{- .Release.Namespace -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "enhancementWorkload.serviceName" -}}
+{{- $name := default .Chart.Name .Values.fullnameOverride -}}
+{{- printf "%s-svc" $name }}
+{{- end -}}

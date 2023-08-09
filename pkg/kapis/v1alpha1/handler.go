@@ -38,18 +38,6 @@ func (h *Handler) ListResource(request *restful.Request, response *restful.Respo
 	resources := request.PathParameter("resources")
 	q := query.ParseQueryParameter(request)
 
-	//user := request.HeaderParameter(constants.UserAgent)
-	//
-	//if resources == constants.SidecarSetType {
-	//	labelSelector := q.LabelSelector
-	//	if labelSelector == "" {
-	//		labelSelector = fmt.Sprintf("%s=%s", constants.UserAgent, user)
-	//	} else {
-	//		labelSelector = fmt.Sprintf("%s,%s=%s", labelSelector, constants.UserAgent, user)
-	//	}
-	//	q.LabelSelector = labelSelector
-	//}
-
 	objs, err := h.operator.List(namespace, resources, q)
 	handleResponse(request, response, objs, err)
 }

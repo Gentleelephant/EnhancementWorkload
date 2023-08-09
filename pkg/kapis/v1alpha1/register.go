@@ -195,4 +195,30 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Param(ws.PathParameter(query.ParameterName, "the name of the resource").Required(true)).
 		Writes(serrors.None).
 		Returns(http.StatusOK, api.StatusOK, serrors.None))
+
+	// get sidecarsets for user
+	ws.Route(ws.GET("/user/{user}/{resources}/{name}").
+		To(h.GetResource).
+		Doc("Get the sidecarset object").
+		Metadata(openapi.KeyOpenAPITags, []string{constants.SidecarSetType}).
+		Param(ws.PathParameter("resources", "known values include sidecarset").Required(true)).
+		Param(ws.PathParameter("name", "name of sidecarset").Required(true)).
+		Writes(v1alpha1.SidecarSet{}).
+		Produces(restful.MIME_JSON).
+		Returns(http.StatusOK, api.StatusOK, v1alpha1.SidecarSet{}))
+
+	// list all sidecarset for user
+	ws.Route(ws.GET("/user/{user}/{resources}").
+		To(h.ListResource).
+		Doc("List the sidecarsets object in all namespace").
+		Metadata(openapi.KeyOpenAPITags, []string{constants.Common}).
+		Param(ws.PathParameter("resources", "known values include clonesets, sidecarsets").Required(true)).
+		Param(ws.QueryParameter(query.ParameterPage, "page").Required(false).DataFormat("page=%d").DefaultValue("page=1")).
+		Param(ws.QueryParameter(query.ParameterLimit, "limit").Required(false)).
+		Param(ws.QueryParameter(query.ParameterAscending, "sort parameters, e.g. ascending=false").Required(false).DefaultValue("ascending=false")).
+		Param(ws.QueryParameter(query.ParameterOrderBy, "sort parameters, e.g. orderBy=createTime")).
+		Writes(api.ListResult{Items: []interface{}{}}).
+		Produces(restful.MIME_JSON).
+		Returns(http.StatusOK, api.StatusOK, api.ListResult{Items: []interface{}{}}))
+
 }

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "enhancementWorkload.fullname" . }}
+  name: {{ include "enhancementWorkload.serviceName" . }}
   namespace: {{ include "enhancementWorkload.namespace" . }}
   labels:
     {{- include "enhancementWorkload.labels" . | nindent 4 }}
