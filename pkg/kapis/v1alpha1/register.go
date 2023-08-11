@@ -197,7 +197,7 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Returns(http.StatusOK, api.StatusOK, serrors.None))
 
 	// get sidecarsets for user
-	ws.Route(ws.GET("/user/{user}/{resources}/{name}").
+	ws.Route(ws.GET("/users/{user}/{resources}/{name}").
 		To(h.GetResource).
 		Doc("Get the sidecarset object").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.SidecarSetType}).
@@ -208,7 +208,7 @@ func registerSidecarSetApi(ws *restful.WebService, h *Handler) {
 		Returns(http.StatusOK, api.StatusOK, v1alpha1.SidecarSet{}))
 
 	// list all sidecarset for user
-	ws.Route(ws.GET("/user/{user}/{resources}").
+	ws.Route(ws.GET("/users/{user}/{resources}").
 		To(h.ListResource).
 		Doc("List the sidecarsets object in all namespace").
 		Metadata(openapi.KeyOpenAPITags, []string{constants.Common}).
